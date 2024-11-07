@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using WalletApp.BL.Configs;
 using WalletApp.BL.Contexts;
+using WalletApp.BL.Repositories;
+using WalletApp.Core.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,9 +13,13 @@ if (string.IsNullOrEmpty(databaseUrl))
 {
     throw new Exception("Please set environment variable 'DATABASE_URL'");
 }
+
+var mapper = MapperConfig.RegisterMapperConfig().CreateMapper();
 // Add services to the container.
-Console.WriteLine($"Database URL: {databaseUrl}");
+builder.Services.AddSingleton(mapper);
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddDbContext<AppDbContext>(options => { options.UseNpgsql(databaseUrl); });
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

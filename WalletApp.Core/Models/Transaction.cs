@@ -19,6 +19,7 @@ public class Transaction : Base
     [Url] public string? IconUrl { get; set; }
     [ForeignKey("User")] public Guid AuthorizedUserId { get; set; }
     public User AuthorizedUser { get; set; }
+    
     [ForeignKey("Card")] public Guid CardId { get; set; }
     public Card Card { get; set; }
 }

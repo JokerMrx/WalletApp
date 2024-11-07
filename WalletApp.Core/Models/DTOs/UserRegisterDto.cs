@@ -1,10 +1,8 @@
 using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore;
 
-namespace WalletApp.Core.Models;
+namespace WalletApp.Core.Models.DTOs;
 
-[Index(nameof(Email), IsUnique = true)]
-public class User : Base
+public class UserRegisterDto
 {
     [Required(ErrorMessage = "First name is required")]
     public string FirstName { get; set; }
@@ -13,11 +11,5 @@ public class User : Base
     public string LastName { get; set; }
 
     [Required(ErrorMessage = "Email is required")]
-    [EmailAddress]
     public string Email { get; set; }
-
-    public bool IsActive { get; set; } = true;
-
-    public IEnumerable<Card> Cards { get; set; }
-    public IEnumerable<Transaction> Transactions { get; set; }
 }

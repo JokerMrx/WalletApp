@@ -17,10 +17,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\WalletApp.BL\WalletApp.BL.csproj" />
       <ProjectReference Include="..\WalletApp.Core\WalletApp.Core.csproj" />
     </ItemGroup>
