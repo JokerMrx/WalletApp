@@ -16,11 +16,10 @@ public class UserRepository : IUserRepository
 
     public async Task<User> CreateAsync(User entity)
     {
-        Console.WriteLine($"{entity.Id} {entity.FirstName} {entity.LastName} {entity.Email} {entity.CreatedAt} {entity.IsActive}");
-        var user = _dbContext.Users.Add(entity).Entity;
+        var user = await _dbContext.Users.AddAsync(entity);
         await _dbContext.SaveChangesAsync();
 
-        return user;
+        return user.Entity;
     }
 
     public async Task<User> GetByIdAsync(Guid id)

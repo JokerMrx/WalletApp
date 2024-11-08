@@ -17,4 +17,9 @@ public class Card : Base
     public User User { get; set; }
 
     public IEnumerable<Transaction> Transactions { get; set; }
+
+    public override string ToString()
+    {
+        return $"Card Id: {Id} | Balance: {Balance} | Current Month: {CurrentMonth} | Available: {Available} | Create at: {CreatedAt}";
+    }
 }

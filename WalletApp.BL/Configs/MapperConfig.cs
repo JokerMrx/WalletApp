@@ -12,6 +12,9 @@ public static class MapperConfig
         {
             config.CreateMap<User, UserRegisterDto>();
             config.CreateMap<UserRegisterDto, User>();
+
+            config.CreateMap<Card, CardDto>();
+            config.CreateMap<CardDto, Card>();
         });
 
         return mappingConfig;
