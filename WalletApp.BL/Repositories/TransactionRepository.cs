@@ -23,9 +23,9 @@ public class TransactionRepository : ITransactionRepository
         return transaction.Entity;
     }
 
-    public async Task<Transaction> GetByIdAsync(Guid id)
+    public async Task<Transaction?> GetByIdAsync(Guid id)
     {
-        var transaction = await _appDbContext.Transactions.SingleAsync(t => t.Id == id);
+        var transaction = await _appDbContext.Transactions.FirstOrDefaultAsync(t => t.Id == id);
 
         return transaction;
     }
@@ -45,6 +45,12 @@ public class TransactionRepository : ITransactionRepository
     public async Task<Transaction> ApproveAsync(Guid transactionId, Guid userId)
     {
         var transaction = await GetByIdAsync(transactionId);
+
+        if (transaction == null)
+        {
+            throw new KeyNotFoundException("Card not found");
+        }
+
         transaction.AuthorizedUserId = userId;
         transaction.StatusType = TransactionStatusType.Approved;
         _appDbContext.Transactions.Update(transaction);
@@ -56,6 +62,12 @@ public class TransactionRepository : ITransactionRepository
     public async Task<Transaction> RejectAsync(Guid transactionId, Guid userId)
     {
         var transaction = await GetByIdAsync(transactionId);
+
+        if (transaction == null)
+        {
+            throw new KeyNotFoundException("Card not found");
+        }
+
         transaction.AuthorizedUserId = userId;
         transaction.StatusType = TransactionStatusType.Rejected;
         _appDbContext.Transactions.Update(transaction);

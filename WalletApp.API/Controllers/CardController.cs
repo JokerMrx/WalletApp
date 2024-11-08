@@ -34,13 +34,19 @@ public class CardController : Controller
         try
         {
             var user = await _userRepository.GetByIdAsync(createCardRequest.UserId);
+
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
             var cardBalance = _cardBalanceRandom.RndBalance();
             var card = new Card()
             {
                 Id = Guid.NewGuid(),
                 UserId = user.Id,
                 Balance = cardBalance,
-                Available = (decimal)Core.Constants.Card.MaxBalance - cardBalance,
+                Available = Core.Constants.Card.MaxBalance - cardBalance,
             };
             var createdCard = await _cardRepository.CreateAsync(card);
             _responseDto.Result = _mapper.Map<CardDto>(createdCard);
@@ -63,6 +69,12 @@ public class CardController : Controller
         try
         {
             var card = await _cardRepository.GetByIdAsync(id);
+
+            if (card == null)
+            {
+                return NotFound("Card not found");
+            }
+
             _responseDto.Result = card;
 
             return Ok(_responseDto);

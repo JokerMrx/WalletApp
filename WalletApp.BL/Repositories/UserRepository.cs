@@ -22,16 +22,16 @@ public class UserRepository : IUserRepository
         return user.Entity;
     }
 
-    public async Task<User> GetByIdAsync(Guid id)
+    public async Task<User?> GetByIdAsync(Guid id)
     {
-        var user = await _dbContext.Users.SingleAsync(u => u.Id.Equals(id));
+        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id.Equals(id));
 
         return user;
     }
 
-    public async Task<User> GetUserByEmailAsync(string email)
+    public async Task<User?> GetUserByEmailAsync(string email)
     {
-        var user = await _dbContext.Users.SingleAsync(u => u.Email == email);
+        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
 
         return user;
     }
@@ -39,6 +39,12 @@ public class UserRepository : IUserRepository
     public async Task<User> DeleteAsync(Guid id)
     {
         var user = await GetByIdAsync(id);
+
+        if (user == null)
+        {
+            throw new KeyNotFoundException("User not found");
+        }
+        
         user.IsActive = false;
         _dbContext.Users.Update(user);
         await _dbContext.SaveChangesAsync();

@@ -1,4 +1,3 @@
-using System.Net;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using WalletApp.API.Contracts.User;
@@ -56,6 +55,12 @@ public class UserController : Controller
         try
         {
             var user = await _userRepository.GetByIdAsync(id);
+            
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+            
             _responseDto.Result = user;
 
             return Ok(_responseDto);

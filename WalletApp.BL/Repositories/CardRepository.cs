@@ -22,27 +22,33 @@ public class CardRepository : ICardRepository
         return card.Entity;
     }
 
-    public async Task<Card> GetByIdAsync(Guid id)
+    public async Task<Card?> GetByIdAsync(Guid id)
     {
-        var card = await _appDbContext.Cards.SingleAsync(c => c.Id.Equals(id));
-        card.CurrentMonth = DateTime.Today.Month;
+        var card = await _appDbContext.Cards.FirstOrDefaultAsync(c => c.Id.Equals(id));
+
+        if (card != null)
+        {
+            card.CurrentMonth = DateTime.Today.Month;
+        }
 
         return card;
     }
 
     public async Task<Card> DepositFundsAsync(Guid id, decimal amount)
     {
-        if (amount < Core.Constants.Card.MinBalance || amount > Core.Constants.Card.MaxBalance)
+        var card = await GetByIdAsync(id);
+
+        if (card == null)
         {
-            throw new ArgumentOutOfRangeException(nameof(amount)); // TODO message
+            throw new KeyNotFoundException("Card not found");
         }
 
-        var card = await GetByIdAsync(id);
         var willBeFunds = card.Balance + amount;
 
-        if (willBeFunds > Core.Constants.Card.MaxBalance)
+        if (willBeFunds < Core.Constants.Card.MinBalance || willBeFunds > Core.Constants.Card.MaxBalance)
         {
-            throw new InvalidOperationException(""); // TODO message
+            throw new InvalidOperationException(
+                "As a result of this transaction, the balance sheet amount will be outside this range");
         }
 
         card.Balance = willBeFunds;
@@ -57,11 +63,17 @@ public class CardRepository : ICardRepository
     public async Task<Card> WithdrawFundsAsync(Guid id, decimal amount)
     {
         var card = await GetByIdAsync(id);
+
+        if (card == null)
+        {
+            throw new KeyNotFoundException("Card not found");
+        }
+
         var willBeFunds = card.Balance - amount;
 
         if (willBeFunds < Core.Constants.Card.MinBalance)
         {
-            throw new ArgumentOutOfRangeException(nameof(amount)); // TODO message
+            throw new InvalidOperationException("Not enough funds");
         }
 
         if (card.Available < amount)

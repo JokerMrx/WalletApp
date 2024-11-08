@@ -36,14 +36,14 @@ public class TransactionController : Controller
 
             if (user == null)
             {
-                return BadRequest();
+                return NotFound("User not found");
             }
 
             var card = await _cardRepository.GetByIdAsync(createTransactionRequest.CardId);
 
             if (card == null)
             {
-                return BadRequest();
+                return NotFound("Card not found");
             }
 
             switch (createTransactionRequest.TransactionType)
@@ -134,14 +134,14 @@ public class TransactionController : Controller
 
             if (user == null)
             {
-                return BadRequest();
+                return NotFound("User not found");
             }
 
             var transaction = await _transactionRepository.GetByIdAsync(id);
 
             if (transaction == null)
             {
-                return BadRequest();
+                return NotFound("Transaction not found");
             }
 
             var approvedTransaction = await _transactionRepository.ApproveAsync(transaction.Id, user.Id);
@@ -168,14 +168,14 @@ public class TransactionController : Controller
 
             if (user == null)
             {
-                return BadRequest();
+                return NotFound("User not found");
             }
 
             var transaction = await _transactionRepository.GetByIdAsync(id);
 
             if (transaction == null)
             {
-                return BadRequest();
+                return NotFound("Transaction not found");
             }
 
             var approvedTransaction = await _transactionRepository.RejectAsync(transaction.Id, user.Id);
