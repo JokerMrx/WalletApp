@@ -15,6 +15,9 @@ public static class MapperConfig
 
             config.CreateMap<Card, CardDto>();
             config.CreateMap<CardDto, Card>();
+
+            config.CreateMap<Transaction, TransactionDto>();
+            config.CreateMap<TransactionDto, Transaction>();
         });
 
         return mappingConfig;

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using WalletApp.BL.Contexts;
+using WalletApp.Core.Enums;
 using WalletApp.Core.Models;
 using WalletApp.Core.Repositories;
 
@@ -16,10 +17,10 @@ public class TransactionRepository : ITransactionRepository
 
     public async Task<Transaction> CreateAsync(Transaction entity)
     {
-        var transaction = _appDbContext.Transactions.Add(entity).Entity;
+        var transaction = await _appDbContext.Transactions.AddAsync(entity);
         await _appDbContext.SaveChangesAsync();
 
-        return transaction;
+        return transaction.Entity;
     }
 
     public async Task<Transaction> GetByIdAsync(Guid id)
@@ -35,9 +36,31 @@ public class TransactionRepository : ITransactionRepository
         var transactions = await _appDbContext.Transactions
             .Where(e => e.CardId.Equals(cardId))
             .Skip(skip)
-            .Take(pageParams.Size)
+            .Take(pageParams.Size).OrderByDescending(en => en.CreatedAt)
             .ToArrayAsync();
 
         return transactions;
+    }
+
+    public async Task<Transaction> ApproveAsync(Guid transactionId, Guid userId)
+    {
+        var transaction = await GetByIdAsync(transactionId);
+        transaction.AuthorizedUserId = userId;
+        transaction.StatusType = TransactionStatusType.Approved;
+        _appDbContext.Transactions.Update(transaction);
+        await _appDbContext.SaveChangesAsync();
+
+        return transaction;
+    }
+
+    public async Task<Transaction> RejectAsync(Guid transactionId, Guid userId)
+    {
+        var transaction = await GetByIdAsync(transactionId);
+        transaction.AuthorizedUserId = userId;
+        transaction.StatusType = TransactionStatusType.Rejected;
+        _appDbContext.Transactions.Update(transaction);
+        await _appDbContext.SaveChangesAsync();
+
+        return transaction;
     }
 }

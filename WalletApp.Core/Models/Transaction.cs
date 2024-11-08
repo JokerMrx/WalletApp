@@ -15,11 +15,11 @@ public class Transaction : Base
     public string Name { get; set; }
 
     public string Description { get; set; }
-    public TransactionStatusType StatusType { get; set; }
-    [Url] public string? IconUrl { get; set; }
+    public TransactionStatusType StatusType { get; set; } = TransactionStatusType.Pending;
+    [Url] public string IconUrl { get; set; } = Constants.Transaction.DefaultIconUrl;
     [ForeignKey("User")] public Guid AuthorizedUserId { get; set; }
     public User AuthorizedUser { get; set; }
-    
+
     [ForeignKey("Card")] public Guid CardId { get; set; }
     public Card Card { get; set; }
 }

@@ -56,12 +56,13 @@ public class CardRepository : ICardRepository
 
     public async Task<Card> WithdrawFundsAsync(Guid id, decimal amount)
     {
-        if (amount < Core.Constants.Card.MinBalance || amount > Core.Constants.Card.MaxBalance)
+        var card = await GetByIdAsync(id);
+        var willBeFunds = card.Balance - amount;
+
+        if (willBeFunds < Core.Constants.Card.MinBalance)
         {
             throw new ArgumentOutOfRangeException(nameof(amount)); // TODO message
         }
-
-        var card = await GetByIdAsync(id);
 
         if (card.Available < amount)
         {
