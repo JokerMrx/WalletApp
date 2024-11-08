@@ -10,4 +10,10 @@
       <ProjectReference Include="..\WalletApp.Core\WalletApp.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="13.0.1" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.20" />
+      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.18" />
+    </ItemGroup>
+
 </Project>
